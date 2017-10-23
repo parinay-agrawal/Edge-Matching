@@ -44,20 +44,18 @@ void MainWindow::on_actionOpen_triggered()
         //read file and take data, then paint is automatically called
         FILE *f = freopen(file.toStdString().c_str(), "r", stdin);
         int n;
+        on_actionReset_triggered();
         scanf("%d",&n);
         setNdialog->setN(n);
         grid.resize(n);
+
         for (int i=0;i<n;i++) {
             grid[i].resize(n);
             for (int j=0;j<n;j++) {
                 scanf("%d", &grid[i][j].top);
-                addColor(grid[i][j].top);
                 scanf("%d", &grid[i][j].left);
-                addColor(grid[i][j].left);
                 scanf("%d", &grid[i][j].bottom);
-                addColor(grid[i][j].bottom);
                 scanf("%d", &grid[i][j].right);
-                addColor(grid[i][j].right);
             }
         }
         int tmp;
@@ -67,8 +65,21 @@ void MainWindow::on_actionOpen_triggered()
             std::string color;
             for (int i=0;i<tmp;i++) {
                 std::cin>>id>>color;
-                mappingBack[id] = QString::fromStdString(color);
-                mappingFront[QString::fromStdString(color)] = id;
+                if (id != 0) {
+                    numcolors++;
+                    mappingBack[id] = QString::fromStdString(color);
+                    mappingFront[QString::fromStdString(color)] = id;
+                }
+            }
+        }
+        else {
+            for (int i=0;i<n;i++) {
+                for (int j=0;j<n;j++) {
+                    addColor(grid[i][j].top);
+                    addColor(grid[i][j].left);
+                    addColor(grid[i][j].bottom);
+                    addColor(grid[i][j].right);
+                }
             }
         }
 
@@ -96,6 +107,7 @@ void MainWindow::addColor(int color)
         while (mappingFront.find(QColor(r,g,b).name()) != mappingFront.end());
         mappingBack.insert(std::make_pair(color, QColor(r,g,b).name()));
         mappingFront.insert(std::make_pair(QColor(r,g,b).name(), color));
+        numcolors++;
     }
 }
 
@@ -202,7 +214,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     int height = winPos.height();
     int width = winPos.width();
 
-    int n = this->setNdialog->getN();
+    int n = grid.size();
 
     int xdiff, ydiff;
     xdiff = width/(n+3);
@@ -300,19 +312,18 @@ SettingsDialog *MainWindow::getSettingsDialog() {
     return setNdialog;
 }
 
-bool MainWindow::getN()
+int MainWindow::getN()
 {
     return setNdialog->getN();
 }
 
 bool MainWindow::isNchanged()
 {
-    return (getN() == grid.size());
+    return !(getN() == grid.size());
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button()==Qt::LeftButton){
         QPoint pos = event->pos();
         QPoint l1,l2,r1,r2;
 
@@ -321,7 +332,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         int height = winPos.height();
         int width = winPos.width();
 
-        int n = this->setNdialog->getN();
+        int n = grid.size();
 
         int xdiff, ydiff;
         xdiff = width/(n+3);
@@ -329,6 +340,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         if (xdiff > ydiff) xdiff = ydiff;
         else ydiff = xdiff;
 
+        bool done=false;
         for (int i=0;i<n;i++) {
             for (int j=0;j<n;j++) {
                 l1.setX(topleft.x()+xdiff*(j+1));
@@ -345,33 +357,116 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
                 midp.setX((l1.x()+r2.x())/2);
                 midp.setY((l1.y()+r2.y())/2);
 
-                if (mappingFront.find(curColor.name()) == mappingFront.end()) {
-                    //add this color to the maps
-                    //chnage numColors
-                }
-
                 if (inside(pos, l1, r1, midp)) {
-                    grid[i][j].top = mappingFront[curColor.name()];
+                    if (event->button() == Qt::LeftButton) {
+                        if (mappingFront.find(curColor.name()) == mappingFront.end()) {
+                            mappingFront.insert(std::make_pair(curColor.name(), ++numcolors));
+                            mappingBack.insert(std::make_pair(numcolors, curColor.name()));
+                        }
+                        grid[i][j].top = mappingFront[curColor.name()];
+                    }
+                    else if (event->button() == Qt::RightButton) {
+                        curColor = QColor(mappingBack[grid[i][j].top]);
+                    }
+
+                    done=true;
                     break;
                 }
                 if (inside(pos, l1, l2, midp)) {
-                    grid[i][j].left = mappingFront[curColor.name()];
+                    if (event->button() == Qt::LeftButton) {
+                        if (mappingFront.find(curColor.name()) == mappingFront.end()) {
+                            mappingFront.insert(std::make_pair(curColor.name(), ++numcolors));
+                            mappingBack.insert(std::make_pair(numcolors, curColor.name()));
+                        }
+                        grid[i][j].left = mappingFront[curColor.name()];
+                    }
+                    else if (event->button() == Qt::RightButton) {
+                        curColor = QColor(mappingBack[grid[i][j].left]);
+                    }
+
+                    done=true;
                     break;
                 }
                 if (inside(pos, l2, r2, midp)) {
-                    grid[i][j].bottom = mappingFront[curColor.name()];
+                    if (event->button() == Qt::LeftButton) {
+                        if (mappingFront.find(curColor.name()) == mappingFront.end()) {
+                            mappingFront.insert(std::make_pair(curColor.name(), ++numcolors));
+                            mappingBack.insert(std::make_pair(numcolors, curColor.name()));
+                        }
+                        grid[i][j].bottom = mappingFront[curColor.name()];
+                    }
+                    else if (event->button() == Qt::RightButton) {
+                        curColor = QColor(mappingBack[grid[i][j].bottom]);
+                    }
+
+                    done=true;
                     break;
                 }
                 if (inside(pos, r2, r1, midp)) {
-                    grid[i][j].right = mappingFront[curColor.name()];
+                    if (event->button() == Qt::LeftButton) {
+                        if (mappingFront.find(curColor.name()) == mappingFront.end()) {
+                            mappingFront.insert(std::make_pair(curColor.name(), ++numcolors));
+                            mappingBack.insert(std::make_pair(numcolors, curColor.name()));
+                        }
+                        grid[i][j].right = mappingFront[curColor.name()];
+                    }
+                    else if (event->button() == Qt::RightButton) {
+                        curColor = QColor(mappingBack[grid[i][j].right]);
+                    }
+
+                    done=true;
                     break;
                 }
             }
+            if (done) break;
         }
-    }
 }
 
-bool MainWindow::inside(QPoint a, QPoint b, QPoint c, QPoint d) {
+bool MainWindow::inside(QPoint a, QPoint b, QPoint c, QPoint d)
+{
+    QPointF p = QPointF(a);
+    QPointF p1 = QPointF(b);
+    QPointF p2 = QPointF(c);
+    QPointF p3 = QPointF(d);
     //check if a is inside (b,c,d)
+    float alpha = ((p2.y() - p3.y())*(p.x() - p3.x()) + (p3.x() - p2.x())*(p.y() - p3.y())) /
+            ((p2.y() - p3.y())*(p1.x() - p3.x()) + (p3.x() - p2.x())*(p1.y() - p3.y()));
+    float beta = ((p3.y() - p1.y())*(p.x() - p3.x()) + (p1.x() - p3.x())*(p.y() - p3.y())) /
+           ((p2.y() - p3.y())*(p1.x() - p3.x()) + (p3.x() - p2.x())*(p1.y() - p3.y()));
+    float gamma = 1.0f - alpha - beta;
+    if (alpha>0 && beta>0 && gamma>0) return true;
+    else return false;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_R)
+    {
+        curColor = QColor(255,0,0);
+    }
+    else if(event->key() == Qt::Key_G)
+    {
+        curColor = QColor(0,255,0);
+    }
+    else if(event->key() == Qt::Key_B)
+    {
+        curColor = QColor(0,0,255);
+    }
+    else if (event->key() == Qt::Key_W)
+    {
+        curColor = QColor(255,255,255);
+    }
+    else if (event->key() == Qt::Key_Y)
+    {
+        curColor = QColor(255,255,0);
+    }
+    else if (event->key() == Qt::Key_C)
+    {
+        curColor = QColor(0,255,255);
+    }
+    else if (event->key() == Qt::Key_M)
+    {
+        curColor = QColor(255,0,255);
+    }
 }
 

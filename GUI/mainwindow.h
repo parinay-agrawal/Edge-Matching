@@ -69,7 +69,7 @@ public:
 
     bool isNchanged();
 
-    bool getN();
+    int getN();
 
     void addColor(int);
 
@@ -88,6 +88,7 @@ private:
 protected:
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
+    void keyPressEvent(QKeyEvent *);
 public:
     std::map<int, QString> mappingBack;
     std::map<QString, int> mappingFront;

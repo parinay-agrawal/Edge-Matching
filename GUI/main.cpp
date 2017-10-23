@@ -17,11 +17,19 @@ int main(int argc, char *argv[])
             }
             if (prevN < w.getN()) {
                 for (int i=prevN;i<w.getN();i++) {
-                    for (int j=prevN;j<w.getN();j++) {
+                    for (int j=0;j<w.getN();j++) {
                         w.grid[i][j].top = 0;
                         w.grid[i][j].left=0;
                         w.grid[i][j].right = 0;
                         w.grid[i][j].bottom = 0;
+                    }
+                }
+                for (int j=0;j<prevN;j++) {
+                    for (int i=prevN;i<w.getN();i++) {
+                        w.grid[j][i].top = 0;
+                        w.grid[j][i].left=0;
+                        w.grid[j][i].right = 0;
+                        w.grid[j][i].bottom = 0;
                     }
                 }
             }
