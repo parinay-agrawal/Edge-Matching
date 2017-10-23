@@ -19,9 +19,12 @@ int get_edge_colour(int dim){
 
 void edge_colour(int x, int y ){
 	int a = 2*r*(x-1) + y;
-	f2 << get_edge_colour(a) << " " << get_edge_colour(a+r) << " " << get_edge_colour(a+2*r) << " " << get_edge_colour(a+r+1) << endl;
-
+	if(a%r == 0 && (a/r)%2 == 1) 
+		f2 << get_edge_colour(a) << " " << get_edge_colour(a+r) << " " << get_edge_colour(a+2*r) << " " << 0 << endl;
+	else
+		f2 << get_edge_colour(a) << " " << get_edge_colour(a+r) << " " << get_edge_colour(a+2*r) << " " << get_edge_colour(a+r+1) << endl;
 }
+
 int main(){
 	FILE *f1 = freopen("sat", "r", stdin);
 
@@ -30,7 +33,7 @@ int main(){
 	f3 >> r >> c >> ncl;
 	f3.close();
 	xD = 16 + (2*(r+c-4))*(2*(r+c-4)) + (r*c-4-(2*(r+c-4)))*(r*c-4-(2*(r+c-4)));
-	f2.open("After", ios::out);
+	f2.open("After",ios::out);
 	f2 << r <<endl;
 	string s;
 	cin >> s;
