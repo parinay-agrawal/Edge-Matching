@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <set>
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -80,11 +81,15 @@ public:
 private:
     Ui::MainWindow *ui;
     QString fileName;
+    QFont font;
 
     int numcolors=0;
 
     QColor curColor = Qt::white;
+
     SettingsDialog *setNdialog;
+
+    void getdatafromfile(QString);
 protected:
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
@@ -93,6 +98,7 @@ public:
     std::map<int, QString> mappingBack;
     std::map<QString, int> mappingFront;
     std::vector<std::vector<square> > grid;
+    std::vector<std::vector<QLabel *> > labels;
 };
 
 #endif // MAINWINDOW_H

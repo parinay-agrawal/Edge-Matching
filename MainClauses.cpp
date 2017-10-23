@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "/home/parinay/Desktop/constraint/Edge-Matching/MainClauses.h"
+#include "MainClauses.h"
 using namespace std;
 
 void square(int x, int beg){

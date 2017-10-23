@@ -1,7 +1,7 @@
 #ifndef GENERATE_H_
 #define GENERATE_H_
 
-#include "/home/parinay/Desktop/constraint/Edge-Matching/Global.h"
+#include "Global.h"
 
 struct piece_info{
 	int type;

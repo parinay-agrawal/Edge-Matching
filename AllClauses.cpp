@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "/home/parinay/Desktop/constraint/Edge-Matching/AllClauses.h"
+#include "AllClauses.h"
 
 using namespace std;
 

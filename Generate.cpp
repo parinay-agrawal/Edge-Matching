@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "/home/parinay/Desktop/constraint/Edge-Matching/Generate.h"
+#include "Generate.h"
 using namespace std;
 
 

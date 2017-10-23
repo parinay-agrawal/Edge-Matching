@@ -1,7 +1,7 @@
 #ifndef MAINCLAUSES_H_
 #define MAINCLAUSES_H_
 
-#include "/home/parinay/Desktop/constraint/Edge-Matching/Global.h"
+#include "Global.h"
 
 
 void diamonds(int beg);

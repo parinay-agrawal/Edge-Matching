@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "/home/parinay/Desktop/constraint/Edge-Matching/BordorPieces.h"
+#include "BordorPieces.h"
 using namespace std;
 
 int border_val(int j){

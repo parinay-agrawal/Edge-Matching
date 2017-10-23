@@ -1,7 +1,7 @@
 #ifndef BORDORPIECES_H_
 #define BORDORPIECES_H_
 
-#include "/home/parinay/Desktop/constraint/Edge-Matching/Global.h"
+#include "Global.h"
 
 
 int border_val(int j);

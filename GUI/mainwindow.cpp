@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("Edge Matching Creator - Untitled");
 
     on_actionReset_triggered();
+
+    font.setPointSize(12);
 }
 
 MainWindow::~MainWindow()
@@ -20,6 +22,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionReset_triggered()
 {
+    for (int i=0;i<labels.size();i++) {
+        for (int j=0;j<labels.size();j++) {
+            if (labels[i][j] != NULL) {
+                labels[i][j]->~QLabel();
+                labels[i][j] = NULL;
+            }
+        }
+    }
+    labels.resize(1);
+    labels[0].resize(1);
+    labels[0][0] = NULL;
     setNdialog->setN(1);
     //other stuff
     numcolors = 0;
@@ -40,6 +53,10 @@ void MainWindow::on_actionReset_triggered()
 void MainWindow::on_actionOpen_triggered()
 {
     QString file = QFileDialog::getOpenFileName(this, "Open a file");
+    getdatafromfile(file);
+}
+
+void MainWindow::getdatafromfile(QString file) {
     if (!file.isEmpty()) {
         //read file and take data, then paint is automatically called
         FILE *f = freopen(file.toStdString().c_str(), "r", stdin);
@@ -48,6 +65,7 @@ void MainWindow::on_actionOpen_triggered()
         scanf("%d",&n);
         setNdialog->setN(n);
         grid.resize(n);
+        labels.resize(n);
         int nc=0;
         std::map<int,int> new_id;
         new_id.clear();
@@ -55,7 +73,9 @@ void MainWindow::on_actionOpen_triggered()
         int tmp;
         for (int i=0;i<n;i++) {
             grid[i].resize(n);
+            labels[i].resize(n);
             for (int j=0;j<n;j++) {
+                labels[i][j] = new QLabel(this);
                 scanf("%d", &tmp);
                 if ((new_id.find(tmp)) == new_id.end()) {
                     new_id[tmp] = (++nc);
@@ -98,6 +118,23 @@ void MainWindow::on_actionOpen_triggered()
             }
         }
 
+        std::vector<std::pair<std::pair<std::pair<int, int>, std::pair<int, int> >, int> > data;
+        for (int i=0;i<grid.size();i++) {
+            for (int j=0;j<grid.size();j++) {
+                auto p1 = std::make_pair(std::make_pair(std::make_pair(grid[i][j].top, grid[i][j].left), std::make_pair(grid[i][j].bottom, grid[i][j].right)), i*grid.size()+j);
+                auto p2 = std::make_pair(std::make_pair(std::make_pair(grid[i][j].left, grid[i][j].bottom), std::make_pair(grid[i][j].right, grid[i][j].top)), i*grid.size()+j);
+                auto p3 = std::make_pair(std::make_pair(std::make_pair(grid[i][j].bottom, grid[i][j].right), std::make_pair(grid[i][j].top, grid[i][j].left)), i*grid.size()+j);
+                auto p4 = std::make_pair(std::make_pair(std::make_pair(grid[i][j].right, grid[i][j].top), std::make_pair(grid[i][j].left, grid[i][j].bottom)), i*grid.size()+j);
+                if (p1>p2) p1=p2;
+                if (p3>p4) p3=p4;
+                if (p1>p3) p1=p3;
+                data.push_back(p1);
+            }
+        }
+        std::sort(data.begin(), data.end());
+        for (int i=0;i<data.size();i++) {
+            labels[data[i].second/grid.size()][data[i].second%grid.size()]->setText(QString::number(i+1));
+        }
         fclose(f);
         fileName = file;
         this->setWindowTitle(QString("Edge Matching Creator - ").append(fileName));
@@ -175,11 +212,27 @@ void MainWindow::on_actionSave_triggered()
         //write output to a file
         std::set<int> ids;
         ids.clear();
+        std::map<int, int> new_id;
+        new_id.clear();
+        new_id[0] = 0;
+        int nc=0;
         if (f != NULL) {
             printf("%d\n",grid.size());
             for (int i=0;i<grid.size();i++) {
                 for (int j=0;j<grid.size();j++) {
-                    printf("%d %d %d %d\n", grid[i][j].top, grid[i][j].left, grid[i][j].bottom, grid[i][j].right);
+                    if (new_id.find(grid[i][j].top) == new_id.end()) {
+                        new_id[grid[i][j].top] = (++nc);
+                    }
+                    if (new_id.find(grid[i][j].left) == new_id.end()) {
+                        new_id[grid[i][j].left] = (++nc);
+                    }
+                    if (new_id.find(grid[i][j].bottom) == new_id.end()) {
+                        new_id[grid[i][j].bottom] = (++nc);
+                    }
+                    if (new_id.find(grid[i][j].right) == new_id.end()) {
+                        new_id[grid[i][j].right] = (++nc);
+                    }
+                    printf("%d %d %d %d\n", new_id[grid[i][j].top], new_id[grid[i][j].left], new_id[grid[i][j].bottom], new_id[grid[i][j].right]);
                     if (grid[i][j].top != 0) ids.insert(grid[i][j].top);
                     if (grid[i][j].left != 0) ids.insert(grid[i][j].left);
                     if (grid[i][j].bottom != 0) ids.insert(grid[i][j].bottom);
@@ -188,11 +241,13 @@ void MainWindow::on_actionSave_triggered()
             }
             printf("%d\n",ids.size());
             for (std::set<int>::iterator it = ids.begin();it != ids.end();it++) {
-                printf("%d %s\n",*it, mappingBack[*it].toStdString().c_str());
+                printf("%d %s\n",new_id[*it], mappingBack[*it].toStdString().c_str());
             }
             fclose(f);
-        }
 
+            //reopen the file
+            getdatafromfile(fileName);
+        }
 }
 
 void MainWindow::on_actionUndo_triggered()
@@ -259,6 +314,16 @@ void MainWindow::paintEvent(QPaintEvent *e)
                     r1.setX(topleft.x()+xdiff*(j+2));
                     l2.setY(topleft.y()+ydiff*(i+2));
                     r1.setY(topleft.y()+ydiff*(i+1));
+
+                    QPoint midp((l1.x()+r2.x())/2, (l1.y()+r2.y())/2);
+
+                    if (labels[i][j] == NULL) {
+                        labels[i][j] = new QLabel(this);
+                        labels[i][j]->setText(QString::number(-1));
+                    }
+                    labels[i][j]->setGeometry(QRect(midp, r2));
+                    labels[i][j]->setFont(font);
+                    labels[i][j]->show();
 
 
                     QPainterPath path1,path2,path3,path4;

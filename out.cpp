@@ -30,7 +30,7 @@ int main(){
 	f3 >> r >> c >> ncl;
 	f3.close();
 	xD = 16 + (2*(r+c-4))*(2*(r+c-4)) + (r*c-4-(2*(r+c-4)))*(r*c-4-(2*(r+c-4)));
-	f2.open("After");
+	f2.open("After", ios::out);
 	f2 << r <<endl;
 	string s;
 	cin >> s;

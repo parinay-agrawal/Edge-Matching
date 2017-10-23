@@ -12,12 +12,23 @@ int main(int argc, char *argv[])
         if (w.isNchanged()) {
             int prevN = w.grid.size();
             w.grid.resize(w.getN());
+            for (int i=0;i<w.labels.size();i++) {
+                for (int j=0;j<w.labels.size();j++) {
+                    if (w.labels[i][j] != NULL) {
+                        w.labels[i][j]->~QLabel();
+                        w.labels[i][j] = NULL;
+                    }
+                }
+            }
+            w.labels.resize(w.getN());
             for (int i=0;i<w.getN();i++) {
                 w.grid[i].resize(w.getN());
+                w.labels[i].resize(w.getN());
             }
             if (prevN < w.getN()) {
                 for (int i=prevN;i<w.getN();i++) {
                     for (int j=0;j<w.getN();j++) {
+                        w.labels[i][j] = NULL;
                         w.grid[i][j].top = 0;
                         w.grid[i][j].left=0;
                         w.grid[i][j].right = 0;
@@ -26,6 +37,7 @@ int main(int argc, char *argv[])
                 }
                 for (int j=0;j<prevN;j++) {
                     for (int i=prevN;i<w.getN();i++) {
+                        w.labels[i][j] = NULL;
                         w.grid[j][i].top = 0;
                         w.grid[j][i].left=0;
                         w.grid[j][i].right = 0;

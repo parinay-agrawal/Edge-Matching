@@ -1,7 +1,7 @@
 #ifndef CENTERPIECES_H_
 #define CENTERPIECES_H_
 
-#include "/home/parinay/Desktop/constraint/Edge-Matching/Global.h"
+#include "Global.h"
 
 
 void permutationB(int pos, int dim, int cl1, int cl2, int cl3, int s1, int s2, int s3);

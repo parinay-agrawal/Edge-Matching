@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "/home/parinay/Desktop/constraint/Edge-Matching/CenterPieces.h"
+#include "CenterPieces.h"
 using namespace std;
 
 

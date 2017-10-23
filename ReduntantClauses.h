@@ -2,7 +2,7 @@
 #define REDUNTANTCLAUSES_H_
 
 #include <bits/stdc++.h>
-#include "/home/parinay/Desktop/constraint/Edge-Matching/ReduntantClauses.h"
+#include "ReduntantClauses.h"
 using namespace std;
 extern set <int> colours;
 void expl(int x, int beg);

@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "/home/parinay/Desktop/constraint/Edge-Matching/Global.h"
+#include "Global.h"
 using namespace std;
 set <int> colours;
 void expl(int x, int beg){
