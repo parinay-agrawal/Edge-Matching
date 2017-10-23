@@ -27,7 +27,7 @@ void diamonds(int beg){
 	for(int i = 1; i <= 2*r*c; i++){
 		if((i-1)/r == 0 || ((i-1)%r == 0 && ((i-1)/r)%2!=0)){
 			for(int j = 1; j <= ncl; j++){
-				cl.push_back((i-1)*ncl + j + beg);
+				cl.push_back(-((i-1)*ncl + j + beg));
 				cl.push_back(0);
 				clauses.push_back(cl);
 				cl.clear();
