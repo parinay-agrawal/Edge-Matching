@@ -11,7 +11,6 @@ void print(){
 		}
 		cout << endl;
 	}
-	//cout << clauses.size() << endl;
 }
 
 
@@ -32,7 +31,6 @@ int main(){
 	std::random_shuffle (pi.begin(), pi.end() );
 	cout << r << endl;
 	for(auto it = pi.begin(); it!=pi.end(); it++){
-		//cout << it->cl1 << " " << it->cl2  << " " << it->cl3  << " " << it->cl4 << endl;
 		int ran_or = rand() % 4;
 		vector <int> orient;
 		orient.push_back(it->cl1);
@@ -71,13 +69,6 @@ int main(){
 	square(2*(r+c-4), xB);
 	square(r*c - 4- 2*(r+c-4), xM);
 	diamonds(xD);
-	//cout << pieces[24].cl1 << pieces[24].cl2 << pieces[24].cl3 << pieces[24].cl4 << endl;
-	//cout << pieces[24].cl1 << pieces[24].cl2 << pieces[24].cl3 << pieces[24].cl4 << endl;
-	//cout << clauses.size() << endl;
-	//pieces[20].cl1 = ncl+1-pieces[20].cl1;
-
-	//expl(1,3);
-	//print();
 	for(int i = 1; i <= 4; i++){
 		int temp_cl[3] = {0};
 		int temp_ct = 0;
@@ -94,6 +85,7 @@ int main(){
 			corner_piece(i, pieces[i-1].cl2, pieces[i-1].cl3);
 		}
 	}
+
 	for(int i = 1; i <= 2*(r+c-4); i++){
 		int temp_cl[3] = {0};
 		int temp_ct = 0;
@@ -114,35 +106,15 @@ int main(){
 	for(int i = 1; i <= r*c - 4- 2*(r+c-4); i++){
 		center_piece(i, pieces[i+3+2*(r+c-4)].cl1, pieces[i+3+2*(r+c-4)].cl2, pieces[i+3+2*(r+c-4)].cl3, pieces[i+3+2*(r+c-4)].cl4);
 	}
-
-
-
 	expl(4,0);
 	expl(2*(r+c-4), xB);
 	expl(r*c - 4- 2*(r+c-4), xM);
-	//cout << clauses.size() << endl;
 	for(int i = 1; i <= r*c - 4- 2*(r+c-4); i++){
 		rem(i, pieces[i+3+2*(r+c-4)].cl1, pieces[i+3+2*(r+c-4)].cl2, pieces[i+3+2*(r+c-4)].cl3, pieces[i+3+2*(r+c-4)].cl4);
 	}
-	//cout << clauses.size() << endl;
 	cout << "p cnf ";
 	cout << xD + 2*r*c*ncl << " ";
 	cout << clauses.size() << endl;
-	for(int i = 1; i <= 2*r*c; i++){
-		for(int j = (i-1)*ncl + 1; j <= (i-1)*ncl + ncl; j++){
-			if(!((i-1)/r == 0 || ((i-1)%r == 0 && ((i-1)/r)%2!=0)));
-				//cout << j+xD << " ";
-		}
-		//cout << endl;
-	}
-	//cout << xD + (71)*4 << endl;
-	//cout << xD + (79)*4 << endl;
-	//cout << xD + (85)*4 << endl;
-	//cout << xD + (78)*4 << endl;
-	//cout << pieces[39].cl1 << pieces[39].cl2 << pieces[39].cl3 << pieces[39].cl4 << endl;
 	print();
 	fclose(g);
-
-	//cout << xD << endl;
-
 }
