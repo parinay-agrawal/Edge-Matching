@@ -10,8 +10,9 @@ vector <int> adj;
 void gen(){
 	adj.push_back(0);
 	for(int i = 0; i < 2*r*c; i++){
-		srand ( time(NULL) );
+		//srand ( time(NULL) );
 		int f = rand() % ncl + 1;
+		//cout << ncl << endl;
 		adj.push_back(f);
 	}
 }
@@ -39,6 +40,8 @@ int bval(int j){
 
 void cor(){
 	piece_info temp;
+	temp.cl3 = 0;
+	temp.cl4 = 0;
 
 	temp.cl1 = adj[r+2];
 	temp.cl2 = adj[2*r+1];
@@ -57,6 +60,7 @@ void cor(){
 void bor(){
 	int val;
 	piece_info temp;
+	temp.cl4 = 0;
 
 	for(int j = 1; j <= r-2; j++){
 		val = bval(j);
