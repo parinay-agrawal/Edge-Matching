@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setNdialog = new SettingsDialog(this);
     fileName = "Untitled";
-    this->setWindowTitle("Untitled");
+    this->setWindowTitle("Edge Matching Creator - Untitled");
 
     on_actionReset_triggered();
 }
@@ -48,44 +48,59 @@ void MainWindow::on_actionOpen_triggered()
         scanf("%d",&n);
         setNdialog->setN(n);
         grid.resize(n);
-
+        int nc=0;
+        std::map<int,int> new_id;
+        new_id.clear();
+        new_id[0]=0;
+        int tmp;
         for (int i=0;i<n;i++) {
             grid[i].resize(n);
             for (int j=0;j<n;j++) {
-                scanf("%d", &grid[i][j].top);
-                scanf("%d", &grid[i][j].left);
-                scanf("%d", &grid[i][j].bottom);
-                scanf("%d", &grid[i][j].right);
+                scanf("%d", &tmp);
+                if ((new_id.find(tmp)) == new_id.end()) {
+                    new_id[tmp] = (++nc);
+                }
+                grid[i][j].top = new_id[tmp];
+                scanf("%d", &tmp);
+                if ((new_id.find(tmp)) == new_id.end()) {
+                    new_id[tmp] = (++nc);
+                }
+                grid[i][j].left = new_id[tmp];
+                scanf("%d", &tmp);
+                if ((new_id.find(tmp)) == new_id.end()) {
+                    new_id[tmp] = (++nc);
+                }
+                grid[i][j].bottom = new_id[tmp];
+                scanf("%d", &tmp);
+                if ((new_id.find(tmp)) == new_id.end()) {
+                    new_id[tmp] = (++nc);
+                }
+                grid[i][j].right = new_id[tmp];
             }
         }
-        int tmp;
         scanf("%d",&tmp);
         if (tmp != 0) {
             int id;
             std::string color;
             for (int i=0;i<tmp;i++) {
                 std::cin>>id>>color;
+                if (new_id.find(id) == new_id.end()) continue;
                 if (id != 0) {
                     numcolors++;
-                    mappingBack[id] = QString::fromStdString(color);
-                    mappingFront[QString::fromStdString(color)] = id;
+                    mappingBack[new_id[id]] = QString::fromStdString(color);
+                    mappingFront[QString::fromStdString(color)] = new_id[id];
                 }
             }
         }
         else {
-            for (int i=0;i<n;i++) {
-                for (int j=0;j<n;j++) {
-                    addColor(grid[i][j].top);
-                    addColor(grid[i][j].left);
-                    addColor(grid[i][j].bottom);
-                    addColor(grid[i][j].right);
-                }
+            for (int i=1;i<=nc;i++) {
+                addColor(i);
             }
         }
 
         fclose(f);
         fileName = file;
-        this->setWindowTitle(file);
+        this->setWindowTitle(QString("Edge Matching Creator - ").append(fileName));
     }
 }
 
@@ -99,12 +114,18 @@ void MainWindow::addColor(int color)
             return;
         }
         int r,g,b;
-        do {
-            r = rand()%256;
-            g = rand()%256;
-            b = rand()%256;
+        while (true) {
+            r = ((rand()%256)*(rand()%256))%256;
+            g = ((rand()%256)*(rand()%256))%256;
+            b = ((rand()%256)*(rand()%256))%256;
+            int diff = 1000000000;
+            for (int i=0;i<=numcolors;i++) {
+                int exr, exg, exb;
+                QColor(mappingBack[i]).getRgb(&exr, &exg, &exb);
+                diff = std::min(diff, (exr-r)*(exr-r) + (exg-g)*(exg-g) + (exb-b)*(exb-b));
+            }
+            if (diff > 10000) break;
         }
-        while (mappingFront.find(QColor(r,g,b).name()) != mappingFront.end());
         mappingBack.insert(std::make_pair(color, QColor(r,g,b).name()));
         mappingFront.insert(std::make_pair(QColor(r,g,b).name(), color));
         numcolors++;
@@ -115,7 +136,6 @@ void MainWindow::on_actionSave_as_triggered()
 {
     QString file = QFileDialog::getSaveFileName(this, "Save as");
     if (!file.isEmpty()) {
-        file.append(".txt");
         QString oldfile = fileName;
         fileName = file;
         on_actionSave_triggered();
@@ -147,9 +167,8 @@ void MainWindow::on_actionSave_triggered()
     if (fileName.compare("Untitled") == 0) {
         QString file = QFileDialog::getSaveFileName(this, "Save as");
         if (file.isEmpty()) return;
-        file.append(".txt");
         fileName = file;
-        this->setWindowTitle(fileName);
+        this->setWindowTitle(QString("Edge Matching Creator - ").append(fileName));
     }
     FILE *f = freopen(fileName.toStdString().c_str(), "w", stdout);
 
@@ -189,7 +208,7 @@ void MainWindow::on_actionRedo_triggered()
 void MainWindow::on_actionNew_triggered()
 {
     fileName = "Untitled";
-    this->setWindowTitle("Untitled");
+    this->setWindowTitle("Edge Matching Creator - Untitled");
     on_actionReset_triggered();
 }
 
