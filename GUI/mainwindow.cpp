@@ -78,22 +78,26 @@ void MainWindow::getdatafromfile(QString file) {
                 labels[i][j] = new QLabel(this);
                 scanf("%d", &tmp);
                 if ((new_id.find(tmp)) == new_id.end()) {
-                    new_id[tmp] = (++nc);
+                    new_id[tmp] = tmp;
+                    nc++;
                 }
                 grid[i][j].top = new_id[tmp];
                 scanf("%d", &tmp);
                 if ((new_id.find(tmp)) == new_id.end()) {
-                    new_id[tmp] = (++nc);
+                    new_id[tmp] = (tmp);
+                    nc++;
                 }
                 grid[i][j].left = new_id[tmp];
                 scanf("%d", &tmp);
                 if ((new_id.find(tmp)) == new_id.end()) {
-                    new_id[tmp] = (++nc);
+                    new_id[tmp] = (tmp);
+                    nc++;
                 }
                 grid[i][j].bottom = new_id[tmp];
                 scanf("%d", &tmp);
                 if ((new_id.find(tmp)) == new_id.end()) {
-                    new_id[tmp] = (++nc);
+                    new_id[tmp] = (tmp);
+                    nc++;
                 }
                 grid[i][j].right = new_id[tmp];
             }
@@ -221,16 +225,16 @@ void MainWindow::on_actionSave_triggered()
             for (int i=0;i<grid.size();i++) {
                 for (int j=0;j<grid.size();j++) {
                     if (new_id.find(grid[i][j].top) == new_id.end()) {
-                        new_id[grid[i][j].top] = (++nc);
+                        new_id[grid[i][j].top] = (grid[i][j].top);
                     }
                     if (new_id.find(grid[i][j].left) == new_id.end()) {
-                        new_id[grid[i][j].left] = (++nc);
+                        new_id[grid[i][j].left] = (grid[i][j].left);
                     }
                     if (new_id.find(grid[i][j].bottom) == new_id.end()) {
-                        new_id[grid[i][j].bottom] = (++nc);
+                        new_id[grid[i][j].bottom] = (grid[i][j].bottom);
                     }
                     if (new_id.find(grid[i][j].right) == new_id.end()) {
-                        new_id[grid[i][j].right] = (++nc);
+                        new_id[grid[i][j].right] = (grid[i][j].right);
                     }
                     printf("%d %d %d %d\n", new_id[grid[i][j].top], new_id[grid[i][j].left], new_id[grid[i][j].bottom], new_id[grid[i][j].right]);
                     if (grid[i][j].top != 0) ids.insert(grid[i][j].top);
