@@ -292,6 +292,9 @@ void MainWindow::paintEvent(QPaintEvent *e)
     int height = winPos.height();
     int width = winPos.width();
 
+    if (height < width) topleft.setX(topleft.x()+(width-height)/2);
+    else topleft.setY(topleft.y()+(height-width)/2);
+
     int n = grid.size();
 
     int xdiff, ydiff;
@@ -309,15 +312,15 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
                 for (int j=0;j<n;j++)
                 {
-                    l1.setX(topleft.x()+xdiff*(j+1));
-                    r2.setX(topleft.x()+xdiff*(j+2));
-                    l1.setY(topleft.y()+ydiff*(i+1));
-                    r2.setY(topleft.y()+ydiff*(i+2));
+                    l1.setX(this->x()+topleft.x()+xdiff*(j+1));
+                    r2.setX(this->x()+topleft.x()+xdiff*(j+2));
+                    l1.setY(this->y()+topleft.y()+ydiff*(i+1));
+                    r2.setY(this->y()+topleft.y()+ydiff*(i+2));
 
-                    l2.setX(topleft.x()+xdiff*(j+1));
-                    r1.setX(topleft.x()+xdiff*(j+2));
-                    l2.setY(topleft.y()+ydiff*(i+2));
-                    r1.setY(topleft.y()+ydiff*(i+1));
+                    l2.setX(this->x()+topleft.x()+xdiff*(j+1));
+                    r1.setX(this->x()+topleft.x()+xdiff*(j+2));
+                    l2.setY(this->y()+topleft.y()+ydiff*(i+2));
+                    r1.setY(this->y()+topleft.y()+ydiff*(i+1));
 
                     QPoint midp((l1.x()+r2.x())/2, (l1.y()+r2.y())/2);
 
@@ -365,17 +368,17 @@ void MainWindow::paintEvent(QPaintEvent *e)
             linepen.setWidth(2);
             painter.setPen(linepen);
 
-            p1.setX(topleft.x()+xdiff);
-            p2.setX(topleft.x()+xdiff*(n+1));
-            p1.setY(topleft.y()+ydiff*(i+1));
-            p2.setY(topleft.y()+(ydiff*(i+1)));
+            p1.setX(this->x()+topleft.x()+xdiff);
+            p2.setX(this->x()+topleft.x()+xdiff*(n+1));
+            p1.setY(this->y()+topleft.y()+ydiff*(i+1));
+            p2.setY(this->y()+topleft.y()+(ydiff*(i+1)));
             painter.drawLine(p1,p2);
         }
         for(int i=0;i<=n;i++) {
-            p1.setY(topleft.y()+ydiff);
-            p2.setY(topleft.y()+ydiff*(n+1));
-            p1.setX(topleft.x()+xdiff*(i+1));
-            p2.setX(topleft.x()+(xdiff*(i+1)));
+            p1.setY(this->y()+topleft.y()+ydiff);
+            p2.setY(this->y()+topleft.y()+ydiff*(n+1));
+            p1.setX(this->x()+topleft.x()+xdiff*(i+1));
+            p2.setX(this->x()+topleft.x()+(xdiff*(i+1)));
             painter.drawLine(p1,p2);
         }
 }
@@ -420,6 +423,9 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         int height = winPos.height();
         int width = winPos.width();
 
+        if (height < width) topleft.setX(topleft.x()+(width-height)/2);
+        else topleft.setY(topleft.y()+(height-width)/2);
+
         int n = grid.size();
 
         int xdiff, ydiff;
@@ -431,15 +437,15 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         bool done=false;
         for (int i=0;i<n;i++) {
             for (int j=0;j<n;j++) {
-                l1.setX(topleft.x()+xdiff*(j+1));
-                r2.setX(topleft.x()+xdiff*(j+2));
-                l1.setY(topleft.y()+ydiff*(i+1));
-                r2.setY(topleft.y()+ydiff*(i+2));
+                l1.setX(this->x()+topleft.x()+xdiff*(j+1));
+                r2.setX(this->x()+topleft.x()+xdiff*(j+2));
+                l1.setY(this->y()+topleft.y()+ydiff*(i+1));
+                r2.setY(this->y()+topleft.y()+ydiff*(i+2));
 
-                l2.setX(topleft.x()+xdiff*(j+1));
-                r1.setX(topleft.x()+xdiff*(j+2));
-                l2.setY(topleft.y()+ydiff*(i+2));
-                r1.setY(topleft.y()+ydiff*(i+1));
+                l2.setX(this->x()+topleft.x()+xdiff*(j+1));
+                r1.setX(this->x()+topleft.x()+xdiff*(j+2));
+                l2.setY(this->y()+topleft.y()+ydiff*(i+2));
+                r1.setY(this->y()+topleft.y()+ydiff*(i+1));
 
                 QPoint midp;
                 midp.setX((l1.x()+r2.x())/2);
